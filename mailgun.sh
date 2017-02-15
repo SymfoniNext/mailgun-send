@@ -49,7 +49,7 @@ for v in $(curl -s "http://$consul/v1/kv/$keyname?recurse=1" | jq -r "map(\"\(.K
 done
 
 
-curl -v --user "api:${config['api_key']}" https://api.mailgun.net/v3/${config['email_domain']}/messages \
+curl -f -v --user "api:${config['api_key']}" https://api.mailgun.net/v3/${config['email_domain']}/messages \
   -F from="${from}" \
   -F to="${to}" \
   -F subject="${subj}" \
