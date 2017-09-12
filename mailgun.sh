@@ -2,23 +2,20 @@
 
 function usage() {
   echo "Usage:"
-  echo "./mailgun.sh <consul-addr> <key-name> <to> <subject> <message> <from>"
-  echo "./mailgun.sh localhost:8500 mailgun \"You <you@you.com>\" \"subject\" \" \"hey you!\" \"Me <me@me.com>\""
+  echo "export API_KEY=xxx EMAIL_DOMAIN=xxx"
+  echo "./mailgun.sh <to> <subject> <message> <from>"
+  echo "./mailgun.sh \"You <you@you.com>\" \"subject\" \" \"hey you!\" \"Me <me@me.com>\""
   exit 1
 }
 
-consul=$1
-if [[ -z "$consul" ]]; then
+if [[ -z "${API_KEY}" ]]; then
   usage;
 fi
 
-shift
-keyname=$1
-if [[ -z "$keyname" ]]; then
+if [[ -z "${EMAIL_DOMAIN}" ]]; then
   usage;
 fi
 
-shift
 to=$1
 if [[ -z "$to" ]]; then
   usage;
@@ -42,14 +39,8 @@ if [[ -z "$from" ]]; then
   usage;
 fi
 
-# Get something from consul
-declare -A config
-for v in $(curl -s "http://$consul/v1/kv/$keyname?recurse=1" | jq -r "map(\"\(.Key):\(.Value)\") | .[] | ltrimstr(\"$keyname/\")"); do
-  config[${v%:*}]=$(base64 -d < <(echo "${v#*:}"))
-done
 
-
-curl -f -v --user "api:${config['api_key']}" https://api.mailgun.net/v3/${config['email_domain']}/messages \
+curl -f -v --user "api:${API_KEY}" https://api.mailgun.net/v3/${EMAIL_DOMAIN}/messages \
   -F from="${from}" \
   -F to="${to}" \
   -F subject="${subj}" \
