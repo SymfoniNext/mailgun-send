@@ -5,4 +5,4 @@ cache: pip
 install:
   - pip install requests pyflakes
 script:
-  - pyflakes mailgun-send.py
+  - pyflakes mailgun.py
