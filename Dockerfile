@@ -1,5 +1,5 @@
-FROM alpine:3.4
-RUN apk add --no-cache curl jq bash
-ADD mailgun.sh /bin/mailgun.sh
-RUN chmod +x /bin/mailgun.sh
-ENTRYPOINT ["/bin/mailgun.sh"]
+FROM python:alpine3.6 
+RUN pip install requests
+ADD mailgun.py /bin/mailgun
+RUN chmod +x /bin/mailgun
+ENTRYPOINT ["/bin/mailgun"]
